@@ -1,23 +1,78 @@
 package com.survey;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
 import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Properties;
+
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
 
 public class SurveyServlet extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response)
             throws ServletException, IOException {
 
         String name = request.getParameter("name");
-        String dept = request.getParameter("dept");
-        String rating = request.getParameter("rating");
+        String branch = request.getParameter("branch");
         String feedback = request.getParameter("feedback");
 
-        String data = name + " | " + dept + " | " + rating + " | " + feedback;
+        // Gmail sender details
+        final String senderEmail = "sweetsheet07@gmail.com";
+        final String appPassword = "evgm gflf payf olfq";
 
-        App.submitResponse(data);
+        // SMTP configuration
+        Properties props = new Properties();
 
-        response.getWriter().println("Survey submitted successfully!");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.ssl.enable", "true");
+
+        Session session = Session.getInstance(props,
+                new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(senderEmail, appPassword);
+                    }
+                });
+
+        try {
+
+            Message message = new MimeMessage(session);
+
+            message.setFrom(new InternetAddress(senderEmail));
+
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse("sweetsheet07@gmail.com")
+            );
+
+            message.setSubject("New Student Survey Submission");
+
+            String emailContent =
+                    "New Survey Submission\n\n" +
+                    "Name: " + name + "\n" +
+                    "Branch: " + branch + "\n" +
+                    "Feedback: " + feedback;
+
+            message.setText(emailContent);
+
+            Transport.send(message);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+        response.setContentType("text/html");
+
+        PrintWriter out = response.getWriter();
+
+        out.println("<h2>Survey Submitted Successfully!</h2>");
     }
 }
