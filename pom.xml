@@ -7,6 +7,7 @@
     <groupId>com.survey</groupId>
     <artifactId>student-survey</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <dependencies>
         <!-- Servlet API -->
@@ -25,8 +26,18 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>student-survey</finalName>
-    </build>
+    
+        <build>
+    <finalName>student-survey</finalName>
+
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>3.4.0</version>
+        </plugin>
+    </plugins>
+</build>
+   
 
 </project>
