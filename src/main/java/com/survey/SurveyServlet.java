@@ -9,10 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.Properties;
-
-import jakarta.mail.*;
-import jakarta.mail.internet.*;
-
+import javax.mail.*;
+import javax.mail.internet.*;
 public class SurveyServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request,
